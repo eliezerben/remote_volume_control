@@ -1,10 +1,8 @@
 import socket
 
 from win_volume import VolumeManager
-from config import MAX_CMD_LEN, CLIENT_CMDS, SERVER_CMDS
+from config import MAX_CMD_LEN, CLIENT_CMDS, SERVER_CMDS, DEFAULT_SERVER_PORT
 import exceptions
-
-PORT = 55000
 
 
 def process_request(request_data, vol_manager):
@@ -56,7 +54,7 @@ def request_listener(client_socket, vol_manager):
 
 def main():
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('', PORT))
+    sock.bind(('', DEFAULT_SERVER_PORT))
     sock.listen(5)
 
     vol_manager = VolumeManager()

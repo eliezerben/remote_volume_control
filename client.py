@@ -2,10 +2,8 @@ import time
 import socket
 import argparse
 
-from config import MAX_CMD_LEN, CLIENT_CMDS, SERVER_CMDS
+from config import MAX_CMD_LEN, CLIENT_CMDS, SERVER_CMDS, DEFAULT_SERVER_PORT
 import exceptions
-
-DEFAULT_SERVER_PORT = 55000
 
 
 def build_command(cmd_string):

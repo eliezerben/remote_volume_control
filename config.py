@@ -1,5 +1,6 @@
 from enum import Enum
 
+DEFAULT_SERVER_PORT = 55000
 
 MAX_CMD_LEN = 200
 
