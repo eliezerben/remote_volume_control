@@ -7,6 +7,7 @@ import exceptions
 
 def process_request(request_data, vol_manager):
     decoded_request = request_data.decode().strip()
+    print(f'Got Request: {decoded_request}')
     cmd_split = decoded_request.split()
     cmd_name = cmd_split[0]
     cmd_value = '' if len(cmd_split) == 1 else cmd_split[1]
@@ -61,6 +62,7 @@ def main():
 
     while True:
         client_socket, address = sock.accept()
+        print(f'\nConnection established with client: {address}')
         request_listener(client_socket, vol_manager)
 
 

@@ -8,7 +8,7 @@ import exceptions
 
 def build_command(cmd_string):
     cmd_string = cmd_string.strip()
-    cmd_split = cmd_sting.split()
+    cmd_split = cmd_string.split()
     cmd_name = cmd_split[0]
     cmd_value = '' if len(cmd_split) == 1 else cmd_split[1]
     cmd_send_string = cmd_name
@@ -21,21 +21,26 @@ def build_command(cmd_string):
             float(cmd_value)
         except ValueError:
             raise exceptions.CommandValueException(f'Invalid value: "{cmd_value}" for client command "{cmd_name}"')
-        cmd_send_string = ' ' + cmd_value
+        cmd_send_string = f'{cmd_name} {cmd_value}'
+    else:
+        cmd_send_string = cmd_name
     return bytes(cmd_send_string, encoding='utf-8')
 
 
 def process_response(sock):
     response_data = sock.recv(MAX_CMD_LEN)
     decoded_response = response_data.decode().strip()
-    if decoded_response not in SERVER_CMDS:
-        raise exceptions.ServerInvalidResponse('Innvalid response received from server.')
-    if decoded_response == 'ERROR':
+    response_split = decoded_response.split()
+    response_name = response_split[0]
+    response_value = '' if len(response_split) == 1 else response_split[1]
+    if response_name not in SERVER_CMDS:
+        raise exceptions.ServerInvalidResponse(f'Innvalid response received from server: {response_name}')
+    if response_name == 'ERROR':
         raise exceptions.ServerError('Server returned ERROR.')
-    elif decoded_response == 'SUCCESS':
-        return decoded_response
+    elif response_name == 'SUCCESS':
+        return response_name
     else:
-        return decoded_response.split()[1]
+        return response_value
 
 
 def main(server_ip, server_port, command):
@@ -46,11 +51,12 @@ def main(server_ip, server_port, command):
     print(response)
     sock.send(build_command('CLOSE_CONN'))
     response = process_response(sock)
+    sock.close()
 
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('server-ip', help="Server's IP")
+    parser.add_argument('server_ip', help="Server's IP")
     parser.add_argument('-p', '--server-port', default=DEFAULT_SERVER_PORT, type=int, help="Server's PORT", required=False)
     parser.add_argument('-c', '--cmd', help='Command', required=True)
     args = parser.parse_args()
