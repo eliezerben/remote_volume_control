@@ -43,15 +43,18 @@ def process_response(sock):
         return response_value
 
 
-def main(server_ip, server_port, command):
+def send_command(command, server_ip, server_port=DEFAULT_SERVER_PORT):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(10)
     sock.connect((server_ip, server_port))
+    sock.settimeout(None)
     sock.send(build_command(command))
     response = process_response(sock)
     print(response)
     sock.send(build_command('CLOSE_CONN'))
-    response = process_response(sock)
+    close_response = process_response(sock)
     sock.close()
+    return response
 
 
 def get_args():
@@ -65,4 +68,4 @@ def get_args():
 
 if __name__ == '__main__':
     args = get_args()
-    main(args.server_ip, args.server_port, args.cmd)
+    send_command(args.cmd, args.server_ip, args.server_port)

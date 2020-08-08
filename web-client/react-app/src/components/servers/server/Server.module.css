@@ -1,0 +1,43 @@
+
+.serverWrapper {
+    padding: 0;
+    border-radius: 2px;
+    overflow: hidden;
+    max-width: 700px;
+    width: 85%;
+    margin: 0 auto;
+}
+
+.header {
+    background-color: #303F9F;
+    padding: 0.6em;
+    color: white;
+}
+
+.serverName {
+    display: inline-block;
+    margin-right: 0.3em;
+}
+
+.serverIp {
+    display: inline-block;
+    font-size: 0.8em;
+}
+
+.body {
+    padding: 0.5em;
+}
+
+.volSlider {
+    width: 70%;
+    max-width: 600px;
+}
+
+.volControlsRow {
+    display: flex;
+    justify-content: center;
+}
+
+.muteButton {
+    color: #018786;
+}
