@@ -5,7 +5,7 @@ function Servers({servers}) {
 
     return (
         <div>
-            { servers.map((server) => <Server server={server}/>) }
+            { servers.map((server, index) => <Server key={index} server={server}/>) }
         </div>
     )
 }

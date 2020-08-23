@@ -1,4 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
+
+import VolumeControlApi from '../../../utilities/VolumeControlApi.js'
 
 import 'material-design-icons/iconfont/material-icons.css';
 
@@ -11,7 +13,12 @@ import '@rmwc/icon-button/styles';
 import { Elevation } from '@rmwc/elevation';
 import '@rmwc/elevation/styles';
 
+import { Typography } from '@rmwc/typography';
+import '@rmwc/typography/styles';
+
 import styles from './Server.module.css';
+
+import { BACKEND_URL } from '../../../utilities/Config.js';
 
 
 function Server({server}) {
@@ -19,12 +26,45 @@ function Server({server}) {
     const [volume, setVolume] = useState(0);
     const [mute, setMute] = useState(false);
 
+    const volControlApi = useRef(new VolumeControlApi(BACKEND_URL, server.ip));
+    const curVolumeTimeoutId = useRef(null);
+
+    useEffect(() => {
+        volControlApi.current.getVol().then(volResponse => {
+            if (volResponse !== null) {
+                setVolume(volResponse);
+            }
+        });
+        volControlApi.current.getMute().then(muteResponse => {
+            if (muteResponse !== null) {
+                setMute(muteResponse);
+            }
+        });
+    }, []);
+
+    useEffect(() => {
+        // Throttle frequency in which commands are sent to server
+        if (curVolumeTimeoutId.current) {
+            clearTimeout(curVolumeTimeoutId.current);
+        }
+        curVolumeTimeoutId.current = setTimeout(() => {
+            volControlApi.current.setVol(volume);
+            curVolumeTimeoutId.current = null;
+        }, 200);
+    }, [volume]);
+
+    useEffect(() => {
+        mute ?
+        volControlApi.current.mute() :
+        volControlApi.current.unmute();
+    }, [mute]);
+
     return (
         <Elevation z='3' wrap>
             <div className={styles.serverWrapper}>
                 <div className={styles.header}>
-                    <div className={styles.serverName}>{server.name}</div>
-                    <div className={styles.serverIp}>({server.ip})</div>
+                    <Typography className={styles.serverName} use='body1'>{server.name}</Typography>
+                    <Typography use='caption'>({server.ip})</Typography>
                 </div>
                 <div className={styles.body}>
                     <div className={styles.volControlsRow}>
@@ -35,7 +75,6 @@ function Server({server}) {
                                 discrete
                                 step={1}
                                 value={volume}
-                                onChange={evt => setVolume(evt.detail.value)}
                                 onInput={evt => setVolume(evt.detail.value)}
                             />
                         </div>

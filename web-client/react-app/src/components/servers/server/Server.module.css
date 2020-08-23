@@ -11,17 +11,12 @@
 .header {
     background-color: #303F9F;
     padding: 0.6em;
-    color: white;
+    color: #d4daff;;
+    user-select: none;
 }
 
 .serverName {
-    display: inline-block;
     margin-right: 0.3em;
-}
-
-.serverIp {
-    display: inline-block;
-    font-size: 0.8em;
 }
 
 .body {

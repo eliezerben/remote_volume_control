@@ -2,15 +2,29 @@ import React from 'react';
 import styles from './App.module.css';
 import Servers from '../../components/servers/Servers.js';
 
+import { BACKEND_URL } from '../../utilities/Config.js';
+
+
 class App extends React.Component {
 
   state = {
-    servers: [
+    servers: [],
+  }
+
+  componentDidMount = async () => {
+    const endpoint = `${BACKEND_URL}/servers/`;
+    const response = await fetch(endpoint, 
       {
-        name: 'Home Computer',
-        ip: '192.168.0.101'
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
       }
-    ]
+    });
+    const content = await response.json();
+    this.setState({
+      servers: content
+    });
   }
 
   render() {
