@@ -4,7 +4,10 @@ import sys
 from flask import Flask, request, jsonify, send_from_directory
 
 MY_PATH = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.join(MY_PATH, '..', '..', 'bin'))
+bin_path = os.path.join(MY_PATH, '..', 'bin')
+if not os.path.isdir(bin_path):
+    bin_path = os.path.join(MY_PATH, '..', '..', 'bin')
+sys.path.append(bin_path)
 import client
 
 import client_config
