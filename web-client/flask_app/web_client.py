@@ -1,7 +1,7 @@
 import os
 import sys
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 
 MY_PATH = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(MY_PATH, '..', '..', 'bin'))
@@ -10,12 +10,16 @@ import client
 import client_config
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='react-build')
 
 @app.route('/')
 def index():
-    return render_template('index.jinja')
+    return send_from_directory(app.static_folder, 'index.html')
 
+@app.route('/<path:path>')
+def static_data(path):
+    print(path)
+    return send_from_directory(app.static_folder, path)
 
 @app.route('/servers/<location>/send-command/', methods=['POST'])
 def send_command(location):
